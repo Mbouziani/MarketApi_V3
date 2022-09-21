@@ -16,9 +16,9 @@ namespace MarketApi_V3.Models
         public string BrancheDirector { get; set; } = null!;
         public string BrancheAddress { get; set; } = null!;
         public string BranchePhone { get; set; } = null!;
-        public int CompanyId { get; set; }
+        public int? CompanyId { get; set; }
 
-        public virtual Company Company { get; set; } = null!;
+        public virtual Company? Company { get; set; }
         public virtual ICollection<Zone> Zones { get; set; }
     }
 }

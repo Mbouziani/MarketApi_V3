@@ -55,6 +55,20 @@ namespace MarketApi_V3.Controllers
 
             return Ok(zone);
         }
+       
+        // GET: api/Zones/5
+        [HttpGet("find/{id}")]
+        public async Task<ActionResult<Zone>> FindZone(int id)
+        {
+            var zone = await _context.Zones.FindAsync(id);
+
+            if (zone == null)
+            {
+                return NotFound();
+            }
+
+            return zone;
+        }
 
         // PUT: api/Zones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -99,7 +113,7 @@ namespace MarketApi_V3.Controllers
             _context.Zones.Add(zone);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetZone", new { id = zone.ZoneId }, zone);
+            return CreatedAtAction("FindZone", new { id = zone.ZoneId }, zone);
         }
 
         // DELETE: api/Zones/5
