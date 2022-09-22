@@ -22,14 +22,28 @@ namespace MarketApi_V3.Controllers
 
         // GET: api/ClientCompanies
         [HttpGet]
-        public async Task<ActionResult<bool>> GetClientCompanies([FromQuery] String username, String password )
+        public async Task<ActionResult<Company>> GetClientCompanies([FromQuery] String username, String password )
         {
-            var result = await _context.ClientCompanies.Where(cC => cC.CompanyUsernam == username && cC.CompanyPasswrod == password && cC.CompanyActiveStatus ==1).ToListAsync();
+            var result= await _context.ClientCompanies.Where(cC => cC.CompanyUsernam == username && cC.CompanyPasswrod == password && cC.CompanyActiveStatus ==1).ToListAsync();
+
+            if (!result.Any())
+            {
+                return NotFound();
+            }
+
+            Company company = new Company();
+            company.CompanyNumber = result[0].CompanyNumber;
+            company.CompanyName = result[0].CompanyName;
+            company.CompanyTaxNumber = result[0].CompanyTaxNumber;
+            company.CompanyPhone = result[0].CompanyPhone;
+            company.CompanyAddress = result[0].CompanyAddress;
+            company.CompanyCommercial = result[0].CompanyCommercial;
+
+            return company;
 
 
 
 
-            return result.Any();
         }
 
         // GET: api/ClientCompanies/5
