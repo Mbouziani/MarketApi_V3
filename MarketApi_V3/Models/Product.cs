@@ -19,6 +19,7 @@ namespace MarketApi_V3.Models
         public string? ProductTypeSize { get; set; }
         public int? ProductActiveStatus { get; set; }
         public string? ProductTypeProduct { get; set; }
+        public int? ProductZone { get; set; }
 
         public virtual ICollection<Salereturned> Salereturneds { get; set; }
         public virtual ICollection<Sale> Sales { get; set; }

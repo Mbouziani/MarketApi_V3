@@ -23,7 +23,7 @@ namespace MarketApi_V3.Controllers
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging,
-            [FromQuery] String? typeProduct)
+            [FromQuery] String? typeProduct, String zoneProductNbr, String allProductNbr)
         {
           if (_context.Products == null)
           {
@@ -35,8 +35,12 @@ namespace MarketApi_V3.Controllers
             {
                 _product = _product.Where(pro => pro.ProductTypeProduct == typeProduct).ToList();
             }
-           
-          var pagedResponse = new PagingResponse<Product>(_product.AsQueryable(), paging);
+            if (!string.IsNullOrWhiteSpace(allProductNbr) && !string.IsNullOrWhiteSpace(zoneProductNbr))
+            {
+                _product = _product.Where(pro => pro.ProductZone == int.Parse(allProductNbr) || pro.ProductZone == int.Parse(zoneProductNbr)).ToList();
+            }
+
+            var pagedResponse = new PagingResponse<Product>(_product.AsQueryable(), paging);
           return Ok(pagedResponse);
         }
 

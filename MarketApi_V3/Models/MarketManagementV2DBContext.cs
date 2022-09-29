@@ -32,7 +32,11 @@ namespace MarketApi_V3.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-             
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source= SQL5092.site4now.net;Initial Catalog=db_a8c943_stationcust;User Id=db_a8c943_stationcust_admin;Password=4ciQ2uc3Ff7Kp8t;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -101,7 +105,7 @@ namespace MarketApi_V3.Models
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.Branches)
                     .HasForeignKey(d => d.CompanyId)
-                    .HasConstraintName("FK__branche__company__4CA06362");
+                    .HasConstraintName("FK__branche__company__787EE5A0");
             });
 
             modelBuilder.Entity<Client>(entity =>
@@ -132,7 +136,7 @@ namespace MarketApi_V3.Models
             modelBuilder.Entity<ClientCompany>(entity =>
             {
                 entity.HasKey(e => e.CompanyId)
-                    .HasName("PK__clientCo__AD5459B0BAB2CC9E");
+                    .HasName("PK__clientCo__AD5459B0B545B776");
 
                 entity.ToTable("clientCompany");
 
@@ -184,7 +188,7 @@ namespace MarketApi_V3.Models
                     .WithMany(p => p.ClientCompanies)
                     .HasForeignKey(d => d.ClientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__clientCom__clien__59FA5E80");
+                    .HasConstraintName("FK__clientCom__clien__797309D9");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -290,6 +294,8 @@ namespace MarketApi_V3.Models
                 entity.Property(e => e.ProductTypeSize)
                     .HasMaxLength(50)
                     .HasColumnName("productTypeSize");
+
+                entity.Property(e => e.ProductZone).HasColumnName("productZone");
             });
 
             modelBuilder.Entity<Reciep>(entity =>
@@ -511,12 +517,12 @@ namespace MarketApi_V3.Models
                 entity.HasOne(d => d.Branche)
                     .WithMany(p => p.Zones)
                     .HasForeignKey(d => d.BrancheId)
-                    .HasConstraintName("FK__zone__brancheID__4F7CD00D");
+                    .HasConstraintName("FK__zone__brancheID__7E37BEF6");
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.Zones)
                     .HasForeignKey(d => d.CompanyId)
-                    .HasConstraintName("FK__zone__companyID__5070F446");
+                    .HasConstraintName("FK__zone__companyID__7F2BE32F");
             });
 
             OnModelCreatingPartial(modelBuilder);
