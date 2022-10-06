@@ -22,8 +22,7 @@ namespace MarketApi_V3.Controllers
         }
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging,
-            [FromQuery] String? typeProduct, String zoneProductNbr, String allProductNbr)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging )
         {
           if (_context.Products == null)
           {
@@ -31,23 +30,29 @@ namespace MarketApi_V3.Controllers
           } 
             var _product = await _context.Products.OrderByDescending(p=>p.ProductId)
                 .ToListAsync();
-            if (!string.IsNullOrWhiteSpace(typeProduct))
+            
+           
+            var resultList = await _context.Zones.Select(m => m.ZoneNumber).Distinct() .ToListAsync();
+
+
+            List<long> zonelist = new List<long> { };
+
+
+            for (int i=0; i< resultList.Count;i++)
             {
-                _product = _product.Where(pro => pro.ProductTypeProduct == typeProduct).ToList();
-            }
-            if (!string.IsNullOrWhiteSpace(allProductNbr) && !string.IsNullOrWhiteSpace(zoneProductNbr))
-            {
-                _product = _product.Where(pro => pro.ProductZone == int.Parse(allProductNbr) || pro.ProductZone == int.Parse(zoneProductNbr)).ToList();
+                zonelist.Add(resultList[i]);
+               
+
             }
 
-            var pagedResponse = new PagingResponse<Product>(_product.AsQueryable(), paging);
+            var pagedResponse = new PagingResponse<Product>(_product.AsQueryable(), paging, zonelist);
           return Ok(pagedResponse);
         }
 
 
         // GET: api/Products
         [HttpGet("All")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts([FromQuery] String? typeProduct)
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts([FromQuery] String? typeProduct, String zoneProductNbr, String allProductNbr)
         {
             if (_context.Products == null)
             {
@@ -55,9 +60,14 @@ namespace MarketApi_V3.Controllers
             }
             var _product = await _context.Products
                .ToListAsync();
+           
             if (!string.IsNullOrWhiteSpace(typeProduct))
             {
                 _product = _product.Where(pro => pro.ProductTypeProduct == typeProduct).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(allProductNbr) && !string.IsNullOrWhiteSpace(zoneProductNbr))
+            {
+                _product = _product.Where(pro => pro.ProductZone == int.Parse(allProductNbr) || pro.ProductZone == int.Parse(zoneProductNbr)).ToList();
             }
             return _product;
              

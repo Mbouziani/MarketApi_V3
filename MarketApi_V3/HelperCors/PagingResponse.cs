@@ -4,7 +4,7 @@ namespace MARKET_API_V3.HelperCors
 {
     public class PagingResponse<T>
     {
-        public PagingResponse(IQueryable<T> Query, PagingMove ClientPaging )
+        public PagingResponse(IQueryable<T> Query, PagingMove ClientPaging, List<long>? zonelist = null)
         {
             Paging = new PagingDetails();
 
@@ -18,13 +18,19 @@ namespace MARKET_API_V3.HelperCors
             Data = Query.Skip((ClientPaging.PageNumber - 1) *
                             ClientPaging.RowCount).Take(ClientPaging.RowCount).ToList();
 
-           
+            ZoneNbrList = zonelist;
+
+
+
+
+
 
 
         }
         public PagingDetails Paging { get; set; }
         public List<T> Data { get; set; }
-       
+        public List<long>? ZoneNbrList { get; set; }
+
     }
     public class PagingResponse2<T>
     {

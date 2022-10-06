@@ -32,11 +32,7 @@ namespace MarketApi_V3.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source= SQL5092.site4now.net;Initial Catalog=db_a8c943_stationcust;User Id=db_a8c943_stationcust_admin;Password=4ciQ2uc3Ff7Kp8t;");
-            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -218,6 +214,8 @@ namespace MarketApi_V3.Models
                 entity.Property(e => e.CompanyTaxNumber)
                     .HasMaxLength(100)
                     .HasColumnName("companyTaxNumber");
+
+                entity.Property(e => e.CompanyZoneCount).HasColumnName("companyZoneCount");
             });
 
             modelBuilder.Entity<InvoiceItem>(entity =>

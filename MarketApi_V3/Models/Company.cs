@@ -18,6 +18,7 @@ namespace MarketApi_V3.Models
         public string CompanyTaxNumber { get; set; } = null!;
         public string CompanyPhone { get; set; } = null!;
         public string CompanyCommercial { get; set; } = null!;
+        public int? CompanyZoneCount { get; set; }
 
         public virtual ICollection<Branche> Branches { get; set; }
         public virtual ICollection<Zone> Zones { get; set; }

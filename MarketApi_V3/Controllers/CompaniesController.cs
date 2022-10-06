@@ -24,9 +24,14 @@ namespace MarketApi_V3.Controllers
         [HttpGet]
         public async Task<ActionResult< Company>> GetCompanies()
         {
-          if (_context.Companies == null)
+            // Status Of Return 
+            //------------------------------------------------
+            // 1- return 'Data' is mean login with Successe 
+            // 2- return '0' is mean is not Found 
+            //------------------------------------------------
+            if (_context.Companies == null)
           {
-              return NotFound();
+              return Ok('0');
           }
             return await _context.Companies.Include(c => c.Branches).Include(c => c.Zones).FirstAsync();
         }
