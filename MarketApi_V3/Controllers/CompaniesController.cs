@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarketApi_V3.Models;
+using MarketApi_V3.HelperCors;
 
 namespace MarketApi_V3.Controllers
 {
@@ -35,6 +36,22 @@ namespace MarketApi_V3.Controllers
           }
             return await _context.Companies.Include(c => c.Branches).Include(c => c.Zones).FirstAsync();
         }
+
+        // GET: api/Companies
+        [HttpGet("Statistic")]
+        public async Task<ActionResult> GetStatistic()
+        {
+
+            Statistique _static = new  Statistique();
+            var result =  await _static.getStatic(  _context);
+            
+
+
+            return   Ok(result);
+        }
+
+
+       
 
         // GET: api/Companies/5
         [HttpGet("{id}")]

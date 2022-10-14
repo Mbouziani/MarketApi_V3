@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarketApi_V3.Models;
 using MARKET_API_V3.HelperCors;
+using MarketApi_V3.HelperCors;
 
 namespace MarketApi_V3.Controllers
 {
@@ -30,9 +31,20 @@ namespace MarketApi_V3.Controllers
                 return NotFound();
             }
             var _agent = await _context.Agents.OrderByDescending(a => a.AgentId).ToListAsync();
+           
             var pagedResponse = new PagingResponse<Agent>(_agent.AsQueryable(), paging);
+           
+
+
             return Ok(pagedResponse);
         }
+
+
+
+       
+
+
+
         // GET: api/Products
         [HttpGet("All")]
         public async Task<ActionResult<IEnumerable<Agent>>> GetAllAgents()

@@ -34,22 +34,6 @@ namespace MarketApi_V3.Controllers
           {
               return NotFound();
           }
- ///
-//            var query = $@"
-//select 
-//  count(*) as reciepCount ,
-//  Sum ([reciepTotalPrice]) as reciepTotalPrice,
-//  Sum ([reciepPercDiscount]) as reciepTotalDiscount,
-//   Sum ([reciepTotalWithDiscount]) as reciepTotalWithDiscount,
-//    Sum ([reciepPriceTax]) as reciepTotalTax,
-//	 Sum ([reciepPriceTotalWithTax]) as reciepTotalWithTax
-  
-//  from reciep
-                            
-//                            ";
-//           //  var statistique = await _context.statistiques.FromSqlRaw(query) .ToListAsync();
-
-///
 
             var reciep = await _context.Recieps.Include(c => c.Sales).OrderByDescending(o=> o.ReciepId).ToListAsync();
             if (!string.IsNullOrWhiteSpace(reciepNumber))

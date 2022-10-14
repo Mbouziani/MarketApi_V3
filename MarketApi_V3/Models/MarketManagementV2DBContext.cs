@@ -24,7 +24,7 @@ namespace MarketApi_V3.Models
         public virtual DbSet<InvoiceItem> InvoiceItems { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Reciep> Recieps { get; set; } = null!;
-        public virtual DbSet<Reciepreturned> Reciepreturneds { get; set; } = null!;
+        public virtual DbSet<Returne> Returnes { get; set; } = null!;
         public virtual DbSet<Sale> Sales { get; set; } = null!;
         public virtual DbSet<Salereturned> Salereturneds { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -201,6 +201,12 @@ namespace MarketApi_V3.Models
                     .HasMaxLength(100)
                     .HasColumnName("companyCommercial");
 
+                entity.Property(e => e.CompanyFractionDigits).HasDefaultValueSql("((2))");
+
+                entity.Property(e => e.CompanyLink)
+                    .HasMaxLength(300)
+                    .HasColumnName("companyLink");
+
                 entity.Property(e => e.CompanyName)
                     .HasMaxLength(250)
                     .HasColumnName("companyName");
@@ -302,6 +308,10 @@ namespace MarketApi_V3.Models
 
                 entity.Property(e => e.ReciepId).HasColumnName("reciepID");
 
+                entity.Property(e => e.BranchId).HasColumnName("branchID");
+
+                entity.Property(e => e.CompanyId).HasColumnName("companyID");
+
                 entity.Property(e => e.ReciepAgentName)
                     .HasMaxLength(200)
                     .HasColumnName("reciepAgentName");
@@ -342,15 +352,37 @@ namespace MarketApi_V3.Models
                     .HasColumnName("reciepVatNumber");
 
                 entity.Property(e => e.ReciepZoneNumber).HasColumnName("reciepZoneNumber");
+
+                entity.Property(e => e.ZoneId).HasColumnName("zoneID");
+
+                entity.HasOne(d => d.Branch)
+                    .WithMany(p => p.Recieps)
+                    .HasForeignKey(d => d.BranchId)
+                    .HasConstraintName("fk_branchID");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.Recieps)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("fk_companyID");
+
+                entity.HasOne(d => d.Zone)
+                    .WithMany(p => p.Recieps)
+                    .HasForeignKey(d => d.ZoneId)
+                    .HasConstraintName("fk_zoneID");
             });
 
-            modelBuilder.Entity<Reciepreturned>(entity =>
+            modelBuilder.Entity<Returne>(entity =>
             {
-                entity.HasKey(e => e.ReturnId);
+                entity.HasKey(e => e.ReturnId)
+                    .HasName("PK_reciepreturned");
 
-                entity.ToTable("reciepreturned");
+                entity.ToTable("returne");
 
                 entity.Property(e => e.ReturnId).HasColumnName("ReturnID");
+
+                entity.Property(e => e.BranchId).HasColumnName("branchID");
+
+                entity.Property(e => e.CompanyId).HasColumnName("companyID");
 
                 entity.Property(e => e.ReturnAgentName).HasMaxLength(200);
 
@@ -367,6 +399,23 @@ namespace MarketApi_V3.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ReturnVatNumber).HasMaxLength(50);
+
+                entity.Property(e => e.ZoneId).HasColumnName("zoneID");
+
+                entity.HasOne(d => d.Branch)
+                    .WithMany(p => p.Returnes)
+                    .HasForeignKey(d => d.BranchId)
+                    .HasConstraintName("fk_branchID_rt");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.Returnes)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("fk_companyID_rt");
+
+                entity.HasOne(d => d.Zone)
+                    .WithMany(p => p.Returnes)
+                    .HasForeignKey(d => d.ZoneId)
+                    .HasConstraintName("fk_zoneID_rt");
             });
 
             modelBuilder.Entity<Sale>(entity =>
@@ -506,6 +555,8 @@ namespace MarketApi_V3.Models
                 entity.Property(e => e.ZonePhone)
                     .HasMaxLength(20)
                     .HasColumnName("zonePhone");
+
+                entity.Property(e => e.ZoneTax).HasColumnName("zoneTax");
 
                 entity.Property(e => e.ZoneType)
                     .HasMaxLength(100)

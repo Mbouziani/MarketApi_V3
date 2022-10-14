@@ -15,6 +15,6 @@ namespace MarketApi_V3.Models
         public string? RsaleProductTypeSize { get; set; }
 
         public virtual Product? Product { get; set; }
-        public virtual Reciepreturned? Return { get; set; }
+        public virtual Returne? Return { get; set; }
     }
 }

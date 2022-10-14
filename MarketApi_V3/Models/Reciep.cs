@@ -26,7 +26,13 @@ namespace MarketApi_V3.Models
         public int? ReciepCloseCashier { get; set; }
         public string? ReciepVatNumber { get; set; }
         public string? ReciepAgentName { get; set; }
+        public int? ZoneId { get; set; }
+        public int? BranchId { get; set; }
+        public int? CompanyId { get; set; }
 
+        public virtual Branche? Branch { get; set; }
+        public virtual Company? Company { get; set; }
+        public virtual Zone? Zone { get; set; }
         public virtual ICollection<Sale> Sales { get; set; }
     }
 }

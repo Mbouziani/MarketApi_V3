@@ -7,6 +7,8 @@ namespace MarketApi_V3.Models
     {
         public Branche()
         {
+            Recieps = new HashSet<Reciep>();
+            Returnes = new HashSet<Returne>();
             Zones = new HashSet<Zone>();
         }
 
@@ -19,6 +21,8 @@ namespace MarketApi_V3.Models
         public int? CompanyId { get; set; }
 
         public virtual Company? Company { get; set; }
+        public virtual ICollection<Reciep> Recieps { get; set; }
+        public virtual ICollection<Returne> Returnes { get; set; }
         public virtual ICollection<Zone> Zones { get; set; }
     }
 }

@@ -23,14 +23,14 @@ namespace MarketApi_V3.Controllers
 
         // GET: api/Returns
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reciepreturned>>> GetReciepreturneds([FromQuery] PagingMove paging,
+        public async Task<ActionResult<IEnumerable<Returne>>> GetReturnes([FromQuery] PagingMove paging,
             [FromQuery] String? returnNumber, String? reciepNumber, String? agentNumber, String? paymentMethode, String? zoneNumber)
         {
-          if (_context.Reciepreturneds == null)
+          if (_context.Returnes == null)
           {
               return NotFound();
           }
-            var _return = await _context.Reciepreturneds.Include(c => c.Salereturneds).OrderByDescending(z => z. ReturnId).ToListAsync();
+            var _return = await _context.Returnes.Include(c => c.Salereturneds).OrderByDescending(z => z. ReturnId).ToListAsync();
             if (!string.IsNullOrWhiteSpace(returnNumber))
             {
                 _return = _return.Where(reciep => reciep.ReturnNumber == long.Parse(returnNumber)).ToList();
@@ -51,40 +51,40 @@ namespace MarketApi_V3.Controllers
             {
                 _return = _return.Where(reciep => reciep.ReturnZoneNumber == int.Parse(zoneNumber)).ToList();
             }
-            var pagedResponse = new PagingResponse<Reciepreturned>(_return.AsQueryable(), paging);
+            var pagedResponse = new PagingResponse<Returne>(_return.AsQueryable(), paging);
             return Ok(pagedResponse);
         }
         
 
         // GET: api/Returns/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reciepreturned>> GetReciepreturned(int id)
+        public async Task<ActionResult<Returne>> GetReturne(int id)
         {
-          if (_context.Reciepreturneds == null)
+          if (_context.Returnes == null)
           {
               return NotFound();
           }
-            var reciepreturned = await _context.Reciepreturneds.FindAsync(id);
+            var Returne = await _context.Returnes.FindAsync(id);
 
-            if (reciepreturned == null)
+            if (Returne == null)
             {
                 return NotFound();
             }
 
-            return reciepreturned;
+            return Returne;
         }
 
         // PUT: api/Returns/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReciepreturned(int id, Reciepreturned reciepreturned)
+        public async Task<IActionResult> PutReturne(int id, Returne Returne)
         {
-            if (id != reciepreturned.ReturnId)
+            if (id != Returne.ReturnId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(reciepreturned).State = EntityState.Modified;
+            _context.Entry(Returne).State = EntityState.Modified;
 
             try
             {
@@ -92,7 +92,7 @@ namespace MarketApi_V3.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ReciepreturnedExists(id))
+                if (!ReturneExists(id))
                 {
                     return NotFound();
                 }
@@ -108,44 +108,44 @@ namespace MarketApi_V3.Controllers
         // POST: api/Returns
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Reciepreturned>> PostReciepreturned(Reciepreturned reciepreturned)
+        public async Task<ActionResult<Returne>> PostReturne(Returne Returne)
         {
-          if (_context.Reciepreturneds == null)
+          if (_context.Returnes == null)
           {
-              return Problem("Entity set 'MarketManagementV2DBContext.Reciepreturneds'  is null.");
+              return Problem("Entity set 'MarketManagementV2DBContext.Returnes'  is null.");
           }
-            _context.Reciepreturneds.Add(reciepreturned);
+            _context.Returnes.Add(Returne);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReciepreturned", new { id = reciepreturned.ReturnId }, reciepreturned);
+            return CreatedAtAction("GetReturne", new { id = Returne.ReturnId }, Returne);
         }
 
 
 
         [HttpPost("ComplexeReturnData")]
-        private async Task<ActionResult<Reciepreturned>> PostComplexeData([FromBody] Reciepreturned reciepreturned)
+        private async Task<ActionResult<Returne>> PostComplexeData([FromBody] Returne Returne)
         {
             SaleReturnedsController ctrlSaleReturn = new SaleReturnedsController(_context);
-            if (_context.Reciepreturneds == null)
+            if (_context.Returnes == null)
             {
                 return Problem("Entity set is null.");
             }
-            Reciepreturned? _return = PostReciepreturned(reciepreturned).Result.Value;
+            Returne? _return = PostReturne(Returne).Result.Value;
             if (_return == null) { return Problem("the user didnt get in "); }
             foreach (var _rsale in _return.Salereturneds)
             {
                 _rsale.ReturnId = _return.ReturnId;
                 await ctrlSaleReturn.PostSalereturned(_rsale);
             }
-            return reciepreturned;
+            return Returne;
         }
 
 
 
         [HttpPost("List")]
-        public async Task<ActionResult<string>> PostListOfProducts([FromBody] List<Reciepreturned> _list)
+        public async Task<ActionResult<string>> PostListOfProducts([FromBody] List<Returne> _list)
         {
-            if (_context.Reciepreturneds == null)
+            if (_context.Returnes == null)
             {
                 return Problem("Entity set is null.");
             }
@@ -163,27 +163,27 @@ namespace MarketApi_V3.Controllers
 
         // DELETE: api/Returns/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReciepreturned(int id)
+        public async Task<IActionResult> DeleteReturne(int id)
         {
-            if (_context.Reciepreturneds == null)
+            if (_context.Returnes == null)
             {
                 return NotFound();
             }
-            var reciepreturned = await _context.Reciepreturneds.FindAsync(id);
-            if (reciepreturned == null)
+            var Returne = await _context.Returnes.FindAsync(id);
+            if (Returne == null)
             {
                 return NotFound();
             }
 
-            _context.Reciepreturneds.Remove(reciepreturned);
+            _context.Returnes.Remove(Returne);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ReciepreturnedExists(int id)
+        private bool ReturneExists(int id)
         {
-            return (_context.Reciepreturneds?.Any(e => e.ReturnId == id)).GetValueOrDefault();
+            return (_context.Returnes?.Any(e => e.ReturnId == id)).GetValueOrDefault();
         }
 
 
