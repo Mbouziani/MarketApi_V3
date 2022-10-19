@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarketApi_V3.Models;
 using MARKET_API_V3.HelperCors;
+using MarketApi_V3.HelperCors;
 
 namespace MarketApi_V3.Controllers
 {
@@ -41,19 +42,16 @@ namespace MarketApi_V3.Controllers
 
         // GET: api/Zones/5
         [HttpGet("{number}")]
-        public async Task<ActionResult<IEnumerable<Zone>>> GetZone(long number)
+        public async Task<ActionResult> GetZone(long number)
         {
-          if (_context.Zones == null)
-          {
-              return NotFound();
-          }
-            var zone =  await _context.Zones.Include(z => z.Company).Include(z => z.Branche).Where(_zone => _zone.ZoneNumber == number)
-                .ToListAsync();
-            
-
-           
-
-            return Ok(zone);
+            var zone = await _context.Zones.Where(_zone => _zone.ZoneNumber == number).SingleOrDefaultAsync();
+            if(zone == null)
+            {
+                return Ok(0);
+            }
+            Location _location = new Location();
+            var resukt = await _location.getLocation(_context, number);
+            return Ok(resukt);
         }
        
         // GET: api/Zones/5
