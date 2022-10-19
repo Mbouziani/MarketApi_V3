@@ -22,19 +22,19 @@ namespace MarketApi_V3.HelperCors
         public double TotalNetReciepPrice { get; set; }
         public double TotalDiscountPrice { get; set; }
         public dynamic? TopClientsOnSale { get; set; }
-        public dynamic? TopClientsOnDisc { get; set; }
+      //  public dynamic? TopClientsOnDisc { get; set; }
         public dynamic? PaymentTypeCount { get; set; }
         public dynamic? ProductTypeCount { get; set; }
         public dynamic? TtcByZone { get; set; }
-        public dynamic? TtcByBranch { get; set; }
-         
+      //  public dynamic? TtcByBranch { get; set; }
+        public dynamic? FixDigit { get; set; }
 
 
 
         public   Task<Statistique> getStatic(MarketManagementV2DBContext _context)
         {
 
-            int FixDigit = (int) _context.Companies.FirstOrDefault()!.CompanyFractionDigits!; 
+            
             Statistique s = new Statistique();
 
             // Count of Column
@@ -44,33 +44,35 @@ namespace MarketApi_V3.HelperCors
             s.ReturnCount = _context.Returnes.Count();
             s.AgentCount = _context.Agents.Count();
 
+            s.FixDigit = (int)_context.Companies.FirstOrDefault()!.CompanyFractionDigits!;
+
             //// Big Value in Column
-            s.BigReciepPrice =   toFraction((double)_context.Recieps.Max(r => r.ReciepPriceTotalWithTax ?? 0), FixDigit);
-            s.BigDiscountPrice = toFraction((double)_context.Recieps.Max(r => r.ReciepPercDiscount ?? 0), FixDigit);
+            s.BigReciepPrice =   (double)_context.Recieps.Max(r => r.ReciepPriceTotalWithTax ?? 0) ;
+            s.BigDiscountPrice  = (double)_context.Recieps.Max(r => r.ReciepPercDiscount ?? 0) ;
 
             // Sum of Column
-            s.TtcReciepPrice = toFraction((double)_context.Recieps.Sum(r => r.ReciepPriceTotalWithTax ?? 0), FixDigit);
-            s.TtcReturnPrice = toFraction((double)_context.Returnes.Sum(r => r.ReturnPriceTotalWithTax ?? 0), FixDigit);
-            s.TotalNetReciepPrice = toFraction((double)_context.Recieps.Sum(r => r.ReciepTotalPrice ?? 0), FixDigit);
-            s.TotalDiscountPrice = toFraction((double)_context.Recieps.Sum(r => r.ReciepPercDiscount ?? 0), FixDigit);
+            s.TtcReciepPrice =  (double)_context.Recieps.Sum(r => r.ReciepPriceTotalWithTax ?? 0) ;
+            s.TtcReturnPrice =  (double)_context.Returnes.Sum(r => r.ReturnPriceTotalWithTax ?? 0) ;
+            s.TotalNetReciepPrice = (double)_context.Recieps.Sum(r => r.ReciepTotalPrice ?? 0) ;
+            s.TotalDiscountPrice =  (double)_context.Recieps.Sum(r => r.ReciepPercDiscount ?? 0) ;
 
             //Top Value On Column
-            s.TopClientsOnSale = _context.Recieps.Where(c=>c.ReciepAgentNumber!=0).GroupBy(m => m.ReciepAgentNumber)
-                                 .Select(m => new 
-                                 { 
-                                     AgentNumber = m.Key,
-                                     Price = m.Sum(v => v.ReciepPriceTotalWithTax)
-                                 })
-                                 .OrderBy(m => m.Price);
+          
 
-            s.TopClientsOnDisc = _context.Recieps.Where(c => c.ReciepAgentNumber != 0).GroupBy(m => m.ReciepAgentNumber)
-                                 .Select(m => new 
-                                 { 
-                                     AgentNumber = m.Key,
-                                     Price = m.Sum(v => v.ReciepPercDiscount)
-                                 })
-                                 .OrderBy(m => m.Price);
-
+            //s.TopClientsOnDisc = _context.Recieps.Where(c => c.ReciepAgentNumber != 0).GroupBy(m => m.ReciepAgentNumber)
+            //                     .Select(m => new 
+            //                     { 
+            //                         AgentNumber = m.Key,
+            //                         Price = m.Sum(v => v.ReciepPercDiscount)
+            //                     })
+            //                     .OrderBy(m => m.Price);
+              s.TopClientsOnSale = _context.Recieps.Where(c=>c.ReciepAgentNumber!=0).GroupBy(m =>new { m.ReciepAgentNumber, m.ReciepAgentName, m.ReciepPercDiscount })
+                                             .Select(m => new 
+                                             { 
+                                                 AgentInfo = m.Key,
+                                                 Price = m.Sum(v => v.ReciepPriceTotalWithTax)
+                                             })
+                                             .OrderBy(m => m.Price).Take(5);
             // Multi Grouped Value
             s.PaymentTypeCount = _context.Recieps.GroupBy(m => m.ReciepPaymentMethode)
                                  .Select(m => new { PaymentType = m.Key, Count = m.Count()})
@@ -86,23 +88,19 @@ namespace MarketApi_V3.HelperCors
                                      ZoneInfo = m.Key,
                                      TotalPrice = m.Sum(v => v.ReciepPriceTotalWithTax)
                                  })
-                                 .OrderBy(m => m.TotalPrice);
+                                 .Take(15);
 
-            s.TtcByBranch = _context.Recieps.GroupBy(m => new { m.BranchId, m.Branch!.BrancheName, m.Branch!.BrancheNumber })
-                                .Select(m => new 
-                                { 
-                                    BranchInfo = m.Key, 
-                                    TotalPrice = m.Sum(v => v.ReciepPriceTotalWithTax)
-                                })
-                                .OrderBy(m => m.TotalPrice);
+            //s.TtcByBranch = _context.Recieps.GroupBy(m => new { m.BranchId, m.Branch!.BrancheName, m.Branch!.BrancheNumber })
+            //                    .Select(m => new 
+            //                    { 
+            //                        BranchInfo = m.Key, 
+            //                        TotalPrice = m.Sum(v => v.ReciepPriceTotalWithTax)
+            //                    })
+            //                    .OrderBy(m => m.TotalPrice);
 
             return Task.FromResult( s);
 
         }
-
-        private double toFraction(double val ,int FixDigit)=> Math.Round(val, FixDigit);
-
-
     }
      
 }

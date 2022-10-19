@@ -41,18 +41,15 @@ namespace MarketApi_V3.Controllers
         [HttpGet("Statistic")]
         public async Task<ActionResult> GetStatistic()
         {
-
             Statistique _static = new  Statistique();
             var result =  await _static.getStatic(  _context);
-            
-
-
             return   Ok(result);
         }
 
-
-       
-
+        // GET: api/Companies
+        [HttpGet("CheckUrl")]
+        public async Task<ActionResult> CheckUrl(long val) => Ok(val);
+         
         // GET: api/Companies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
