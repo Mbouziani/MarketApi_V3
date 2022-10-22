@@ -18,10 +18,8 @@ namespace MarketApi_V3.Models
 
         public virtual DbSet<Agent> Agents { get; set; } = null!;
         public virtual DbSet<Branche> Branches { get; set; } = null!;
-        public virtual DbSet<Client> Clients { get; set; } = null!;
-        public virtual DbSet<ClientCompany> ClientCompanies { get; set; } = null!;
-        public virtual DbSet<Company> Companies { get; set; } = null!;
-        public virtual DbSet<InvoiceItem> InvoiceItems { get; set; } = null!;
+       
+        public virtual DbSet<Company> Companies { get; set; } = null!; 
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Reciep> Recieps { get; set; } = null!;
         public virtual DbSet<Returne> Returnes { get; set; } = null!;
@@ -104,89 +102,7 @@ namespace MarketApi_V3.Models
                     .HasConstraintName("FK__branche__company__787EE5A0");
             });
 
-            modelBuilder.Entity<Client>(entity =>
-            {
-                entity.ToTable("client");
-
-                entity.Property(e => e.ClientId).HasColumnName("clientID");
-
-                entity.Property(e => e.ClientActiveStatus).HasColumnName("clientActiveStatus");
-
-                entity.Property(e => e.ClientEmail)
-                    .HasMaxLength(200)
-                    .HasColumnName("clientEmail");
-
-                entity.Property(e => e.ClientName)
-                    .HasMaxLength(250)
-                    .HasColumnName("clientName");
-
-                entity.Property(e => e.ClientPhone)
-                    .HasMaxLength(20)
-                    .HasColumnName("clientPhone");
-
-                entity.Property(e => e.CreateAt)
-                    .HasMaxLength(50)
-                    .HasColumnName("createAt");
-            });
-
-            modelBuilder.Entity<ClientCompany>(entity =>
-            {
-                entity.HasKey(e => e.CompanyId)
-                    .HasName("PK__clientCo__AD5459B0B545B776");
-
-                entity.ToTable("clientCompany");
-
-                entity.Property(e => e.CompanyId).HasColumnName("companyID");
-
-                entity.Property(e => e.ClientId).HasColumnName("clientID");
-
-                entity.Property(e => e.CompanyActiveStatus).HasColumnName("companyActiveStatus");
-
-                entity.Property(e => e.CompanyAddress)
-                    .HasMaxLength(500)
-                    .HasColumnName("companyAddress");
-
-                entity.Property(e => e.CompanyCommercial)
-                    .HasMaxLength(100)
-                    .HasColumnName("companyCommercial");
-
-                entity.Property(e => e.CompanyEmail)
-                    .HasMaxLength(250)
-                    .HasColumnName("companyEmail");
-
-                entity.Property(e => e.CompanyName)
-                    .HasMaxLength(250)
-                    .HasColumnName("companyName");
-
-                entity.Property(e => e.CompanyNumber).HasColumnName("companyNumber");
-
-                entity.Property(e => e.CompanyPasswrod)
-                    .HasMaxLength(250)
-                    .HasColumnName("companyPasswrod");
-
-                entity.Property(e => e.CompanyPhone)
-                    .HasMaxLength(20)
-                    .HasColumnName("companyPhone");
-
-                entity.Property(e => e.CompanyTaxNumber)
-                    .HasMaxLength(100)
-                    .HasColumnName("companyTaxNumber");
-
-                entity.Property(e => e.CompanyUsernam)
-                    .HasMaxLength(250)
-                    .HasColumnName("companyUsernam");
-
-                entity.Property(e => e.CreateAt)
-                    .HasMaxLength(50)
-                    .HasColumnName("createAt");
-
-                entity.HasOne(d => d.Client)
-                    .WithMany(p => p.ClientCompanies)
-                    .HasForeignKey(d => d.ClientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__clientCom__clien__797309D9");
-            });
-
+      
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.ToTable("company");
@@ -224,50 +140,7 @@ namespace MarketApi_V3.Models
                 entity.Property(e => e.CompanyZoneCount).HasColumnName("companyZoneCount");
             });
 
-            modelBuilder.Entity<InvoiceItem>(entity =>
-            {
-                entity.ToTable("InvoiceItem");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.ArbName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BranchId)
-                    .HasColumnName("BranchID")
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Closecahier).HasColumnName("closecahier");
-
-                entity.Property(e => e.FacilityId)
-                    .HasColumnName("FacilityID")
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.InvoiceId).HasColumnName("invoiceID");
-
-                entity.Property(e => e.Price).HasColumnName("price");
-
-                entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-                entity.Property(e => e.SaleOfPointId).HasColumnName("SaleOfPointID");
-
-                entity.Property(e => e.SellerId)
-                    .HasColumnName("SellerID")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Tax).HasColumnName("tax");
-
-                entity.Property(e => e.TimeStamp).HasColumnName("timeStamp");
-
-                entity.Property(e => e.TotalPrice).HasColumnName("totalPrice");
-
-                entity.Property(e => e.Type)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("type");
-            });
-
+       
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("product");

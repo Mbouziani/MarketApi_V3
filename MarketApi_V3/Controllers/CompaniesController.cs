@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarketApi_V3.Models;
-using MarketApi_V3.HelperCors;
+using MarketApi_V3.HelperCors; 
 
 namespace MarketApi_V3.Controllers
 {
@@ -23,33 +23,48 @@ namespace MarketApi_V3.Controllers
 
         // GET: api/Companies
         [HttpGet]
-        public async Task<ActionResult< Company>> GetCompanies()
+        public async Task<ActionResult<Company>> GetCompanies()
         {
             // Status Of Return 
             //------------------------------------------------
             // 1- return 'Data' is mean login with Successe 
             // 2- return '0' is mean is not Found 
             //------------------------------------------------
-            if (_context.Companies == null)
-          {
-              return Ok('0');
-          }
-            return await _context.Companies.Include(c => c.Branches).Include(c => c.Zones).FirstAsync();
+            var company = await _context.Companies.ToListAsync();
+            if (company.Any())
+            {
+                var result = await _context.Companies.Include(c => c.Branches).ThenInclude(z => z.Zones).FirstAsync();
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(0);
+            }
         }
+            
 
         // GET: api/Companies
         [HttpGet("Statistic")]
         public async Task<ActionResult> GetStatistic()
         {
-            Statistique _static = new  Statistique();
-            var result =  await _static.getStatic(  _context);
-            return   Ok(result);
+            var company = await _context.Companies.ToListAsync();
+            if (company.Any())
+            {
+                Statistique _static = new Statistique();
+                var result = await _static.getStatic(_context);
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(0);
+            }
+         
         }
 
         // GET: api/Companies
         [HttpGet("CheckUrl")]
-        public async Task<ActionResult> CheckUrl(long val) => Ok(val);
-         
+        public ActionResult CheckUrl(long val) => Ok(val);
+
         // GET: api/Companies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
