@@ -52,7 +52,7 @@ namespace MarketApi_V3.Controllers
             {
                 Statistique _static = new Statistique();
                 var result = await _static.getStatic(_context);
-                return Ok(result);
+                return result == null ?Ok(0):Ok(result);
             }
             else
             {
