@@ -29,7 +29,7 @@ namespace MarketApi_V3.Controllers
             // Status Of Return 
             //------------------------------------------------
             // 1- return 'Data' is mean login with Successe 
-            // 2- return '0' is mean is not Found 
+            // 2- return '0' is mean the company is not Found 
             //------------------------------------------------
             var company = await _context.Companies.ToListAsync();
             if (company.Any())
