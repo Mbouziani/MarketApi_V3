@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarketApi_V3.Models;
 using MARKET_API_V3.HelperCors;
+using MarketApi_V3.Models.DTO_Response;
 
 namespace MarketApi_V3.Controllers
 {
@@ -22,30 +23,25 @@ namespace MarketApi_V3.Controllers
         }
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging )
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging , [FromQuery] String? typeProduct, String? zoneProductNbr, String? productNameOrBareCode)
         {
           if (_context.Products == null)
           {
               return NotFound();
           } 
-            var _product = await _context.Products.OrderByDescending(p=>p.ProductId)
-                .ToListAsync();
             
-           
-            var resultList = await _context.Zones.Select(m => m.ZoneNumber).Distinct() .ToListAsync();
+          var _products = await _context.Products.OrderByDescending(p=>p.ProductId).Include(ps=>ps.Salereturneds).Include(psr=>psr.Sales)
+                .ToListAsync();
 
+          ProductDTO  productDTO = new ProductDTO();
+          var filterProducts = productDTO.FilterProduct(_products,typeProduct,zoneProductNbr, productNameOrBareCode);
+          var resultProducts = productDTO.toProductDTO(filterProducts);
 
-            List<long> zonelist = new List<long> { };
-
-
-            for (int i=0; i< resultList.Count;i++)
-            {
-                zonelist.Add(resultList[i]);
-               
-
-            }
-
-            var pagedResponse = new PagingResponse<Product>(_product.AsQueryable(), paging, zonelist);
+            ProductZoneDTO zoneDTO = new ProductZoneDTO();
+            var zones = zoneDTO.GetProductZones(_context);
+ 
+             
+           var pagedResponse = new PagingResponse<ProductDTO>(resultProducts.AsQueryable(), paging, zones);
           return Ok(pagedResponse);
         }
 
