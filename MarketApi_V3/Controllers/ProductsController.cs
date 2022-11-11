@@ -23,7 +23,7 @@ namespace MarketApi_V3.Controllers
         }
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging , [FromQuery] String? typeProduct, String? zoneProductNbr, String? productNameOrBareCode)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] PagingMove paging , [FromQuery]  String? searchQry)
         {
           if (_context.Products == null)
           {
@@ -34,7 +34,7 @@ namespace MarketApi_V3.Controllers
                 .ToListAsync();
 
           ProductDTO  productDTO = new ProductDTO();
-          var filterProducts = productDTO.FilterProduct(_products,typeProduct,zoneProductNbr, productNameOrBareCode);
+          var filterProducts = productDTO.FilterProduct(_products , searchQry);
           var resultProducts = productDTO.toProductDTO(filterProducts);
 
             ProductZoneDTO zoneDTO = new ProductZoneDTO();

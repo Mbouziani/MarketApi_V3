@@ -50,21 +50,37 @@ namespace MarketApi_V3.Models.DTO_Response
         }
 
 
-        public IEnumerable<Product> FilterProduct(List<Product> listProduct, [FromQuery] String? typeProduct, String? zoneProductNbr, String? productNameOrBareCode)
+        public IEnumerable<Product> FilterProduct(List<Product> listProduct, [FromQuery] String? searchQry)
         {
 
-            if (!string.IsNullOrWhiteSpace(productNameOrBareCode))
+            if (!string.IsNullOrWhiteSpace(searchQry))
             {
-                listProduct = listProduct.Where(pro => pro.ProductName == productNameOrBareCode || pro.ProductBarcode== productNameOrBareCode).ToList();
+                
+
+                listProduct = listProduct.
+                    Where(pro =>
+                    (pro.ProductName ?? "").ToLower().Contains(searchQry.ToLower()) ||
+                    (pro.ProductBarcode ?? "").Contains(searchQry.ToLower()) ||
+                    (pro.ProductTypeProduct ?? "").Contains(searchQry.ToLower())  ||
+                   pro.ProductZone.ToString() ==  searchQry
+
+
+                    ).ToList();
             }
-            if (!string.IsNullOrWhiteSpace(typeProduct))
-            {
-                listProduct = listProduct.Where(pro => pro.ProductTypeProduct == typeProduct).ToList();
-            }
-            if ( !string.IsNullOrWhiteSpace(zoneProductNbr))
-            {
-                listProduct = listProduct.Where(pro => pro.ProductZone == int.Parse(zoneProductNbr)).ToList();
-            }
+
+
+
+
+
+
+            //if (!string.IsNullOrWhiteSpace(typeProduct))
+            //{
+            //    listProduct = listProduct.Where(pro => pro.ProductTypeProduct == typeProduct).ToList();
+            //}
+            //if ( !string.IsNullOrWhiteSpace(zoneProductNbr))
+            //{
+            //    listProduct = listProduct.Where(pro => pro.ProductZone == int.Parse(zoneProductNbr)).ToList();
+            //}
 
             IEnumerable<Product> result = listProduct;
             return listProduct;
